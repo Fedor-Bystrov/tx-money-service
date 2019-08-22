@@ -18,6 +18,7 @@ application {
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
+    compile group: 'com.h2database', name: 'h2', version: '1.4.197'
     compile "org.slf4j:slf4j-simple:1.7.26"
     compile 'io.javalin:javalin:3.4.1'
 }
