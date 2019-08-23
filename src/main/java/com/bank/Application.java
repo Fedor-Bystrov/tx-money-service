@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Map;
 import java.util.function.Consumer;
 
 public class Application {
@@ -41,7 +42,7 @@ public class Application {
     repository.test();
 
     javalinApp
-      .get("/", ctx -> ctx.result("Hello World"));
+      .get("/", ctx -> ctx.json(Map.of("test", "HelloWorld")));
 
     return javalinApp;
   }
