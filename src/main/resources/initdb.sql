@@ -28,11 +28,11 @@ VALUES (1), -- account(1) is admin account
 -- account 3: 500_000.00 coins
 -- account 4: 474_999.75 coins
 -- account 5: 25_000.25 coins
--- account 6: 0 coins
+-- account 6: 0.00 coins
 --
-INSERT INTO transactions (amount, recipient, sender)
-VALUES (2500000.00, 1, 1), -- initializing account(1) with 2_500_000.00
-       (500000.00, 2, 1),  -- account(1) sent 500_000.00 to account(2)
-       (500000.00, 3, 1),  -- account(1) sent 500_000.00 to account(3)
-       (500000.00, 4, 1),  -- account(1) sent 500_000.00 to account(4)
-       (25000.25, 5, 4);   -- account(4) sent 25_000.25  to account(5)
+INSERT INTO transactions (creation_time, amount, recipient, sender)
+VALUES ('2019-08-13 00:00:00', 2500000.00, 1, 1), -- initializing account(1) with 2_500_000.00
+       ('2019-08-13 01:01:00', 500000.00, 2, 1),  -- account(1) sent 500_000.00 to account(2)
+       ('2019-08-13 02:02:00', 500000.00, 3, 1),  -- account(1) sent 500_000.00 to account(3)
+       ('2019-08-13 03:03:00', 500000.00, 4, 1),  -- account(1) sent 500_000.00 to account(4)
+       ('2019-08-13 04:04:00', 25000.25, 5, 4);   -- account(4) sent 25_000.25  to account(5)
