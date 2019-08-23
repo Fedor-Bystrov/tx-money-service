@@ -13,24 +13,18 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 public class Application {
+  static final String H2_URL = "jdbc:h2:mem:app;INIT=RUNSCRIPT FROM 'classpath:initdb.sql'";
   private static final Logger LOGGER = LoggerFactory.getLogger(Application.class);
-  private static final String H2_URL = "jdbc:h2:mem:";
   private static final int APP_PORT = 3137;
 
   public static void main(String[] args) {
     LOGGER.info("Initializing embedded database");
-    try (final var connection = DriverManager.getConnection(H2_URL)) {
+    try (var connection = DriverManager.getConnection(H2_URL)) {
       LOGGER.info("Embedded database initialized");
-      // TODO add initial accounts and transactions
       newJavalinApp(javalinConfig -> {
         javalinConfig.showJavalinBanner = false;
         javalinConfig.enableDevLogging();
       }, connection, APP_PORT);
-
-      // TODO
-      //  - uri for account creation
-      //  - uri for transaction creation
-      //  - unit tests and integration tests
     } catch (SQLException ex) {
       LOGGER.error("Embedded database initialization failure", ex);
     }
