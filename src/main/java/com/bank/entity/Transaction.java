@@ -5,13 +5,13 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class Transaction {
-  private long transactionId;
+  private int transactionId;
   private LocalDateTime creationTime;
   private BigDecimal amount;
   private Account sender;
   private Account recipient;
 
-  public Transaction(long transactionId, BigDecimal amount, Account sender, Account recipient) {
+  public Transaction(int transactionId, BigDecimal amount, Account sender, Account recipient) {
     this.transactionId = transactionId;
     this.creationTime = LocalDateTime.now();
     this.amount = amount;
@@ -19,7 +19,7 @@ public class Transaction {
     this.recipient = recipient;
   }
 
-  public long getTransactionId() {
+  public int getTransactionId() {
     return transactionId;
   }
 

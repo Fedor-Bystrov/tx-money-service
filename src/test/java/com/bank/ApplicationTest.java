@@ -10,6 +10,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+import static com.bank.Application.initTestData;
 import static com.bank.Application.newJavalinApp;
 import static io.restassured.RestAssured.get;
 import static org.hamcrest.Matchers.equalTo;
@@ -26,6 +27,7 @@ class ApplicationTest {
   @BeforeEach
   void setUp() throws SQLException {
     connection = DriverManager.getConnection(H2_TEST_URL);
+    initTestData(connection);
     javalinApp = newJavalinApp(javalinConfig -> javalinConfig.showJavalinBanner = false, connection, TEST_APP_PORT);
     RestAssured.port = TEST_APP_PORT;
   }
@@ -42,7 +44,8 @@ class ApplicationTest {
   //  2. Test getting transaction by transactionId
   //  3. Test getting transactions from accountId
   //  4. Test getting transactions to accountId
-  //  5. Test creation of transaction, account1.balance and account2.balance should change
+  //  5. Test creation of account
+  //  6. Test creation of transaction, account1.balance and account2.balance should change
   //
 
   @Test
