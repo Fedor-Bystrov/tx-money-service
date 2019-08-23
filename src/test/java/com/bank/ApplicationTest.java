@@ -36,8 +36,17 @@ class ApplicationTest {
     javalinApp.stop();
   }
 
+  //
+  // TODO Test plan:
+  //  1. Test getting account by id (check balance)
+  //  2. Test getting transaction by transactionId
+  //  3. Test getting transactions from accountId
+  //  4. Test getting transactions to accountId
+  //  5. Test creation of transaction, account1.balance and account2.balance should change
+  //
+
   @Test
-  void name() {
+  void integrationTest() {
     get("/").then()
       .statusCode(HTTP_STATUS_OK)
       .body("test", equalTo("HelloWorld"));
