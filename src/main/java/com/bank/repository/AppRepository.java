@@ -1,22 +1,36 @@
 package com.bank.repository;
 
+import com.bank.entity.Account;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class AppRepository {
-    private final Connection connection;
+  private static final Logger LOGGER = LoggerFactory.getLogger(AppRepository.class);
+  private static final String ALL_ACCOUNTS_QUERY = "SELECT account_id FROM accounts;";
 
-    public AppRepository(Connection connection) {
-        this.connection = connection;
-    }
+  private final Connection connection;
 
-    public void test() throws SQLException {
-        final var stm = connection.createStatement();
-        final var rs = stm.executeQuery("SELECT 1+1");
-        if (rs.next()) {
-            System.out.println(rs.getInt(1));
-        }
-        rs.close();
-        stm.close();
+  public AppRepository(Connection connection) {
+    this.connection = connection;
+  }
+
+  public List<Account> selectAllAccounts() throws SQLException {
+    LOGGER.info("Selecting all accounts");
+    try (final var statement = connection.createStatement();
+         final var resultSet = statement.executeQuery(ALL_ACCOUNTS_QUERY)) {
+
+      LOGGER.info("Extracting accounts");
+      final var accounts = new ArrayList<Account>();
+      while (resultSet.next()) {
+        accounts.add(new Account(resultSet.getInt(1)));
+      }
+
+      return accounts;
     }
+  }
 }
