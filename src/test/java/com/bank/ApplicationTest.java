@@ -27,7 +27,7 @@ class ApplicationTest {
   @BeforeEach
   void setUp() throws SQLException {
     connection = DriverManager.getConnection(H2_URL);
-    javalinApp = newJavalinApp(config -> config.showJavalinBanner = false, connection, TEST_APP_PORT);
+    javalinApp = newJavalinApp(config -> config.showJavalinBanner = false, TEST_APP_PORT);
     RestAssured.port = TEST_APP_PORT;
   }
 
@@ -40,7 +40,7 @@ class ApplicationTest {
   @Test
   void integrationTest() {
     // 1. Check that accounts were initialized
-    get("/account/all").then()
+    get("/account/list").then()
       .statusCode(200)
       .body("accountId", hasItems(INITIAL_ACCOUNTS.keySet()));
 

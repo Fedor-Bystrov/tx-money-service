@@ -8,10 +8,8 @@ import io.javalin.core.JavalinConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.Map;
 import java.util.function.Consumer;
 
 public class Application {
@@ -20,28 +18,30 @@ public class Application {
   private static final int APP_PORT = 3137;
 
   public static void main(String[] args) {
-    LOGGER.info("Initializing embedded database");
-    try (var connection = DriverManager.getConnection(H2_URL)) {
-      LOGGER.info("Embedded database initialized");
-      newJavalinApp(javalinConfig -> {
-        javalinConfig.showJavalinBanner = false;
-        javalinConfig.enableDevLogging();
-      }, connection, APP_PORT);
-    } catch (SQLException ex) {
-      LOGGER.error("Embedded database initialization failure", ex);
-    }
+    newJavalinApp(config -> {
+      config.showJavalinBanner = false;
+      config.enableDevLogging();
+    }, APP_PORT);
   }
 
-  static Javalin newJavalinApp(Consumer<JavalinConfig> config, Connection connection, int appPort) throws SQLException {
-    final var javalinApp = Javalin.create(config).start(appPort);
-    final var repository = new AppRepository(connection);
-    final var accountService = new AccountService(repository);
-    final var accountResource = new AccountResource(accountService);
-    repository.test();
+  static Javalin newJavalinApp(Consumer<JavalinConfig> config, int appPort) {
+    try {
+      LOGGER.info("Initializing embedded database");
+      final var connection = DriverManager.getConnection(H2_URL);
+      LOGGER.info("Embedded database initialized");
 
-    javalinApp
-      .get("/", ctx -> ctx.json(Map.of("test", "HelloWorld")))
-      .get("/account/all", accountResource::getAllAccounts);
-    return javalinApp;
+      final var javalinApp = Javalin.create(config).start(appPort);
+      final var repository = new AppRepository(connection);
+      final var accountService = new AccountService(repository);
+      final var accountResource = new AccountResource(accountService);
+
+      javalinApp
+        .get("/account/list", accountResource::getAccountList);
+
+      return javalinApp;
+    } catch (SQLException ex) {
+      LOGGER.error("Embedded database initialization failure", ex);
+      throw new RuntimeException("Database initialization failure");
+    }
   }
 }
