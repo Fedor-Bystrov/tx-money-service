@@ -66,13 +66,50 @@ class ApplicationTest {
           "balance", equalTo(accountBalance)
         ));
 
-    //
-    // TODO Test plan:
-    //  4. Test getting transactions from accountId
-    //  5. Test getting transactions to accountId
-    //  6. Test creation of account
-    //  7. Test creation of transaction, account1.balance and account2.balance should change
-    //
+    // 4. Check searching transactions by sender works
+    get(String.format("/transaction/sender/%s", "4")).then()
+      .statusCode(200)
+      .body(
+        "transactionId", equalTo("5"),
+        "creationTime", equalTo("2019-08-13 04:04:00"),
+        "amount", equalTo("25000.25"),
+        "recipient", equalTo("5"),
+        "sender", equalTo("4")
+      );
+
+    // zero transactions for sender = 6
+    get(String.format("/transaction/sender/%s", "6")).then()
+      .statusCode(200)
+      .body(empty());
+
+    // sender = 16 doesn't exist
+    get(String.format("/transaction/sender/%s", "16")).then()
+      .statusCode(400)
+      .body(empty());
+
+    // 5. Check searching transactions by recipient works
+    get(String.format("/transaction/recipient/%s", "5")).then()
+      .statusCode(200)
+      .body(
+        "transactionId", equalTo("5"),
+        "creationTime", equalTo("2019-08-13 04:04:00"),
+        "amount", equalTo("25000.25"),
+        "recipient", equalTo("5"),
+        "sender", equalTo("4")
+      );
+
+    // zero transactions for recipient = 6
+    get(String.format("/transaction/recipient/%s", "6")).then()
+      .statusCode(200)
+      .body(empty());
+
+    // recipient = 16 doesn't exist
+    get(String.format("/transaction/recipient/%s", "16")).then()
+      .statusCode(400)
+      .body(empty());
+
+    // 6. Check account creation resource works
+    // 7. Check creation of transaction, check that balances change
   }
 
   private static Map<String, Map<String, String>> getInitialTransactions() {
@@ -81,7 +118,7 @@ class ApplicationTest {
         "creationTime", "2019-08-13 00:00:00",
         "amount", "2500000.00",
         "recipient", "1",
-        "sender", "2"
+        "sender", "1"
       ),
       "2", Map.of(
         "creationTime", "2019-08-13 01:01:00",
@@ -103,7 +140,7 @@ class ApplicationTest {
       ),
       "5", Map.of(
         "creationTime", "2019-08-13 04:04:00",
-        "amount", "525000.25",
+        "amount", "25000.25",
         "recipient", "5",
         "sender", "4"
       ));
