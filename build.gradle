@@ -13,7 +13,7 @@ repositories {
 }
 
 application {
-    mainClassName = 'com.bank.Application'
+    mainClassName = 'com.bank.Main'
 }
 
 dependencies {
