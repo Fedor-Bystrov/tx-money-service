@@ -6,12 +6,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
 import java.util.Map;
 
-import static com.bank.Application.H2_URL;
 import static com.bank.Application.newJavalinApp;
 import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.*;
@@ -22,18 +18,15 @@ class ApplicationTest {
   private static final int TEST_APP_PORT = 3137;
 
   private Javalin javalinApp;
-  private Connection connection;
 
   @BeforeEach
-  void setUp() throws SQLException {
-    connection = DriverManager.getConnection(H2_URL);
+  void setUp() {
     javalinApp = newJavalinApp(config -> config.showJavalinBanner = false, TEST_APP_PORT);
     RestAssured.port = TEST_APP_PORT;
   }
 
   @AfterEach
-  void tearDown() throws SQLException {
-    connection.close();
+  void tearDown() {
     javalinApp.stop();
   }
 

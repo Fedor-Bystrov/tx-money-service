@@ -13,7 +13,7 @@ import java.sql.SQLException;
 import java.util.function.Consumer;
 
 public class Application {
-  static final String H2_URL = "jdbc:h2:mem:app;INIT=RUNSCRIPT FROM 'classpath:initdb.sql'";
+  private static final String H2_URL = "jdbc:h2:mem:app;INIT=RUNSCRIPT FROM 'classpath:initdb.sql'";
   private static final Logger LOGGER = LoggerFactory.getLogger(Application.class);
   private static final int APP_PORT = 3137;
 
