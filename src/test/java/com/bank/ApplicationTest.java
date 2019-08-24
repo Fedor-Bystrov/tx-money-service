@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 
-import static com.bank.Application.newJavalinApp;
+import static com.bank.Main.newJavalinApp;
 import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.*;
 

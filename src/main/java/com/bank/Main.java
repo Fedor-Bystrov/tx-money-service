@@ -12,9 +12,9 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.function.Consumer;
 
-public class Application {
+public class Main {
   private static final String H2_URL = "jdbc:h2:mem:app;INIT=RUNSCRIPT FROM 'classpath:initdb.sql'";
-  private static final Logger LOGGER = LoggerFactory.getLogger(Application.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
   private static final int APP_PORT = 3137;
 
   public static void main(String[] args) {
