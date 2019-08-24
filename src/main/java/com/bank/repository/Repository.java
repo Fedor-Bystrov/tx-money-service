@@ -9,13 +9,13 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AppRepository {
-  private static final Logger LOGGER = LoggerFactory.getLogger(AppRepository.class);
+public class Repository {
+  private static final Logger LOGGER = LoggerFactory.getLogger(Repository.class);
   private static final String ALL_ACCOUNTS_QUERY = "SELECT account_id FROM accounts;";
 
   private final Connection connection;
 
-  public AppRepository(Connection connection) {
+  public Repository(Connection connection) {
     this.connection = connection;
   }
 
