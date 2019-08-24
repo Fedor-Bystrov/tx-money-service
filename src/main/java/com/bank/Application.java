@@ -1,6 +1,8 @@
 package com.bank;
 
 import com.bank.repository.AppRepository;
+import com.bank.resource.AccountResource;
+import com.bank.service.AccountService;
 import io.javalin.Javalin;
 import io.javalin.core.JavalinConfig;
 import org.slf4j.Logger;
@@ -33,11 +35,13 @@ public class Application {
   static Javalin newJavalinApp(Consumer<JavalinConfig> config, Connection connection, int appPort) throws SQLException {
     final var javalinApp = Javalin.create(config).start(appPort);
     final var repository = new AppRepository(connection);
+    final var accountService = new AccountService(repository);
+    final var accountResource = new AccountResource(accountService);
     repository.test();
 
     javalinApp
-      .get("/", ctx -> ctx.json(Map.of("test", "HelloWorld")));
-
+      .get("/", ctx -> ctx.json(Map.of("test", "HelloWorld")))
+      .get("/account/all", accountResource::getAllAccounts);
     return javalinApp;
   }
 }
