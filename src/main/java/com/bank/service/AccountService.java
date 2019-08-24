@@ -1,19 +1,29 @@
 package com.bank.service;
 
 import com.bank.entity.Account;
-import com.bank.repository.AppRepository;
+import com.bank.repository.Repository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.Collections;
+import java.sql.SQLException;
 import java.util.List;
 
 public class AccountService {
-  private final AppRepository repository;
+  private static final Logger LOGGER = LoggerFactory.getLogger(AccountService.class);
 
-  public AccountService(AppRepository repository) {
+  private final Repository repository;
+
+  public AccountService(Repository repository) {
     this.repository = repository;
   }
 
-  public List<Account> getAllAccounts() {
-    return Collections.emptyList();
+  public List<Account> getAccountList() {
+    try {
+      LOGGER.info("Selecting all accounts from repository");
+      return repository.selectAllAccounts();
+    } catch (SQLException ex) {
+      LOGGER.error("SQLException during all accounts select", ex);
+      throw new RuntimeException();
+    }
   }
 }
