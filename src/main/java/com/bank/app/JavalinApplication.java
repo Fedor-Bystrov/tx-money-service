@@ -12,22 +12,22 @@ import java.util.function.Consumer;
 
 public class JavalinApplication {
   private static final Logger LOGGER = LoggerFactory.getLogger(JavalinApplication.class);
+  private static final String H2_URL = "jdbc:h2:mem:app;INIT=RUNSCRIPT FROM 'classpath:initdb.sql'";
 
   private final Connection connection;
   private final ApplicationContext ctx;
   private final Javalin application;
 
   /**
-   * Initializes connection to the database and starts Javalin application on specified port
+   * Initializes connection to the embedded database and starts Javalin application on specified port
    *
    * @param config  javalin config
-   * @param dbUrl   h2 database url
    * @param appPort application port
    */
-  public JavalinApplication(Consumer<JavalinConfig> config, String dbUrl, int appPort) {
+  public JavalinApplication(Consumer<JavalinConfig> config, int appPort) {
     try {
       LOGGER.info("Initializing embedded database");
-      this.connection = DriverManager.getConnection(dbUrl);
+      this.connection = DriverManager.getConnection(H2_URL);
 
       LOGGER.info("Initializing application context");
       ctx = new ApplicationContext(connection);
