@@ -1,14 +1,14 @@
 package com.bank;
 
-import io.javalin.Javalin;
+import com.bank.app.JavalinApplication;
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.sql.SQLException;
 import java.util.Map;
 
-import static com.bank.Main.newJavalinApp;
 import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.*;
 
@@ -17,16 +17,16 @@ class ApplicationTest {
   private static final Map<String, String> INITIAL_ACCOUNTS = getInitialAccounts();
   private static final int TEST_APP_PORT = 3137;
 
-  private Javalin javalinApp;
+  private JavalinApplication javalinApp;
 
   @BeforeEach
   void setUp() {
-    javalinApp = newJavalinApp(config -> config.showJavalinBanner = false, TEST_APP_PORT);
+    javalinApp = new JavalinApplication(config -> config.showJavalinBanner = false, TEST_APP_PORT);
     RestAssured.port = TEST_APP_PORT;
   }
 
   @AfterEach
-  void tearDown() {
+  void tearDown() throws SQLException {
     javalinApp.stop();
   }
 
