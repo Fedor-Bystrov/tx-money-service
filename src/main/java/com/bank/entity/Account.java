@@ -3,9 +3,10 @@ package com.bank.entity;
 import java.util.Objects;
 
 public class Account {
-  private int accountId;
+  private final int accountId;
 
   public Account(int accountId) {
+    this.accountId = accountId;
   }
 
   public int getAccountId() {
