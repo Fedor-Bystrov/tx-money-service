@@ -35,6 +35,7 @@ class ApplicationTest {
     // 1. Check that accounts were initialized
     get("/account/list").then()
       .statusCode(200)
+      .contentType("application/json") // TODO check content-type everywhere
       .body("accountId", hasItems(INITIAL_ACCOUNTS.keySet()));
 
     // 2. Check that transaction were initialized
