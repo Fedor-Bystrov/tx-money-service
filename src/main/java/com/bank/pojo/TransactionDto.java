@@ -1,5 +1,8 @@
 package com.bank.pojo;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -11,7 +14,12 @@ public class TransactionDto {
   private int sender;
   private int recipient;
 
-  public TransactionDto(int transactionId, LocalDateTime creationTime, BigDecimal amount, int sender, int recipient) {
+  @JsonCreator
+  public TransactionDto(@JsonProperty("transactionId") int transactionId,
+                        @JsonProperty("creationTime") LocalDateTime creationTime,
+                        @JsonProperty("amount") BigDecimal amount,
+                        @JsonProperty("sender") int sender,
+                        @JsonProperty("recipient") int recipient) {
     this.transactionId = transactionId;
     this.creationTime = creationTime;
     this.amount = amount;
