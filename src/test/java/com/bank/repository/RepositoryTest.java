@@ -1,6 +1,7 @@
 package com.bank.repository;
 
 import com.bank.exception.EntityNotFoundException;
+import com.bank.pojo.AccountDto;
 import com.bank.pojo.TransactionDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,6 +14,8 @@ import java.math.RoundingMode;
 import java.sql.*;
 import java.time.LocalDateTime;
 
+import static com.bank.repository.Repository.SELECT_ACCOUNT_BY_ID_QUERY;
+import static com.bank.repository.Repository.SELECT_TX_BY_ID_QUERY;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
@@ -20,9 +23,6 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class RepositoryTest {
-  private static final String FIND_TX_BY_ID_QUERY = "SELECT " +
-    "transaction_id, creation_time, amount, recipient, sender " +
-    "FROM transactions where id=%d;";
 
   @Mock
   Connection connection;
@@ -37,7 +37,8 @@ class RepositoryTest {
   @Test
   void findTransactionByIdSuccess() throws SQLException {
     final var now = LocalDateTime.now();
-    final var tx1 = new TransactionDto(1, now, BigDecimal.TEN.setScale(2, RoundingMode.HALF_DOWN), 1, 2);
+    final var tx1 = new TransactionDto(1, now,
+      BigDecimal.TEN.setScale(2, RoundingMode.HALF_DOWN), 1, 2);
 
     final var resultSetMock = mock(ResultSet.class);
     when(resultSetMock.next()).thenReturn(true);
@@ -47,7 +48,8 @@ class RepositoryTest {
     when(resultSetMock.getInt(4)).thenReturn(tx1.getSender());
     when(resultSetMock.getInt(5)).thenReturn(tx1.getRecipient());
 
-    when(statement.executeQuery(String.format(FIND_TX_BY_ID_QUERY, tx1.getTransactionId()))).thenReturn(resultSetMock);
+    when(statement.executeQuery(String.format(SELECT_TX_BY_ID_QUERY, tx1.getTransactionId())))
+      .thenReturn(resultSetMock);
 
     final var repository = new Repository(connection);
     assertEquals(tx1, repository.findTransactionById(tx1.getTransactionId()));
@@ -57,7 +59,31 @@ class RepositoryTest {
   void findTransactionByIdThrows() throws SQLException {
     final var repository = new Repository(connection);
     final var resultSetMock = mock(ResultSet.class);
-    when(statement.executeQuery(String.format(FIND_TX_BY_ID_QUERY, 1))).thenReturn(resultSetMock);
+    when(statement.executeQuery(String.format(SELECT_TX_BY_ID_QUERY, 1))).thenReturn(resultSetMock);
     assertThrows(EntityNotFoundException.class, () -> repository.findTransactionById(1));
+  }
+
+  @Test
+  void findAccountByIdSuccess() throws SQLException {
+    final var account1 = new AccountDto(1, "123456.12");
+
+    final var resultSetMock = mock(ResultSet.class);
+    when(resultSetMock.next()).thenReturn(true);
+    when(resultSetMock.getInt(1)).thenReturn(account1.getAccountId());
+    when(resultSetMock.getString(2)).thenReturn(account1.getBalance().toString());
+
+    when(statement.executeQuery(String.format(SELECT_ACCOUNT_BY_ID_QUERY, account1.getAccountId())))
+      .thenReturn(resultSetMock);
+
+    final var repository = new Repository(connection);
+    assertEquals(account1, repository.findAccountById(account1.getAccountId()));
+  }
+
+  @Test
+  void findAccountByIdThrows() throws SQLException {
+    final var repository = new Repository(connection);
+    final var resultSetMock = mock(ResultSet.class);
+    when(statement.executeQuery(String.format(SELECT_ACCOUNT_BY_ID_QUERY, 1))).thenReturn(resultSetMock);
+    assertThrows(EntityNotFoundException.class, () -> repository.findAccountById(1));
   }
 }
