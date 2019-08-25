@@ -49,6 +49,11 @@ class ApplicationTest {
       }
     );
 
+    get(String.format("/transaction/%d", 999)).then()
+      .statusCode(Response.SC_BAD_REQUEST)
+      .contentType("application/json")
+      .body("error", equalTo("Invalid transaction id"));
+
     // TODO check BadRequestResponse of id not string and id = 999
 
     // 2. Check initial accounts
