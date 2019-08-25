@@ -15,7 +15,6 @@ public class JavalinApplication {
   private static final String H2_URL = "jdbc:h2:mem:app;INIT=RUNSCRIPT FROM 'classpath:initdb.sql'";
 
   private final Connection connection;
-  private final ApplicationContext ctx;
   private final Javalin application;
 
   /**
@@ -30,11 +29,12 @@ public class JavalinApplication {
       this.connection = DriverManager.getConnection(H2_URL);
 
       LOGGER.info("Initializing application context");
-      ctx = new ApplicationContext(connection);
+      final var appCtx = new ApplicationContext(connection);
+
       application = Javalin.create(config).start(appPort)
-        .get("/account/:accountId", ctx.getAccountResource()::getAccount)
-        .get("/transaction/:transactionId", ctx.getTransactionResource()::getTransactionById)
-        .post("/transaction", ctx.getTransactionResource()::createTransaction);
+        .get("/account/:accountId", appCtx.getAccountResource()::getAccount)
+        .get("/transaction/:transactionId", appCtx.getTransactionResource()::getTransactionById)
+        .post("/transaction", appCtx.getTransactionResource()::createTransaction);
     }
     catch (SQLException ex) {
       LOGGER.error("Embedded database initialization failure", ex);
