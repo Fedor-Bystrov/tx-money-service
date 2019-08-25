@@ -1,21 +1,26 @@
 package com.bank;
 
 import com.bank.app.JavalinApplication;
+import com.bank.pojo.Account;
 import io.restassured.RestAssured;
+import org.eclipse.jetty.server.Response;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
 import java.util.Map;
+import java.util.stream.IntStream;
 
 import static io.restassured.RestAssured.*;
+import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 class ApplicationTest {
   private static final Map<String, Map<String, String>> INITIAL_TRANSACTIONS = getInitialTransactions();
   private static final Map<String, String> INITIAL_ACCOUNTS = getInitialAccounts();
-  private static final int TEST_APP_PORT = 3137;
+  private static final int TEST_APP_PORT = 3138;
 
   private JavalinApplication javalinApp;
 
@@ -33,15 +38,20 @@ class ApplicationTest {
   @Test
   void integrationTest() {
     // 1. Check that accounts were initialized
-    get("/account/list").then()
-      .statusCode(200)
-      .contentType("application/json") // TODO check content-type everywhere
-      .body("accountId", hasItems(INITIAL_ACCOUNTS.keySet()));
+    final var accountList = get("/account/list").then()
+      .statusCode(Response.SC_OK)
+      .contentType("application/json")
+      .extract().body().jsonPath()
+      .getList("", Account.class);
+
+    assertEquals(6, accountList.size());
+    assertThat(accountList, containsInAnyOrder(IntStream.range(1, 7).mapToObj(Account::new).toArray()));
 
     // 2. Check that transaction were initialized
     INITIAL_TRANSACTIONS.forEach((transactionId, transactionData) ->
       get(String.format("/transaction/%s", transactionId)).then()
-        .statusCode(200)
+        .statusCode(Response.SC_OK)
+        .contentType("application/json")
         .body(
           "transactionId", equalTo(transactionId),
           "creationTime", equalTo(transactionData.get("creationTime")),
@@ -54,7 +64,8 @@ class ApplicationTest {
     // 3. Check initial balances
     INITIAL_ACCOUNTS.forEach((accountId, accountBalance) ->
       get(String.format("/account/%s", accountId)).then()
-        .statusCode(200)
+        .statusCode(Response.SC_OK)
+        .contentType("application/json")
         .body(
           "accountId", equalTo(accountBalance),
           "balance", equalTo(accountBalance)
@@ -62,7 +73,8 @@ class ApplicationTest {
 
     // 4. Check searching transactions by sender works
     get(String.format("/transaction/sender/%s", "4")).then()
-      .statusCode(200)
+      .statusCode(Response.SC_OK)
+      .contentType("application/json")
       .body(
         "transactionId", equalTo("5"),
         "creationTime", equalTo("2019-08-13 04:04:00"),
@@ -73,7 +85,8 @@ class ApplicationTest {
 
     // zero transactions for sender = 6
     get(String.format("/transaction/sender/%s", "6")).then()
-      .statusCode(200)
+      .statusCode(Response.SC_OK)
+      .contentType("application/json")
       .body(empty());
 
     // sender = 16 doesn't exist
@@ -83,7 +96,8 @@ class ApplicationTest {
 
     // 5. Check searching transactions by recipient works
     get(String.format("/transaction/recipient/%s", "5")).then()
-      .statusCode(200)
+      .statusCode(Response.SC_OK)
+      .contentType("application/json")
       .body(
         "transactionId", equalTo("5"),
         "creationTime", equalTo("2019-08-13 04:04:00"),
@@ -94,12 +108,13 @@ class ApplicationTest {
 
     // zero transactions for recipient = 6
     get(String.format("/transaction/recipient/%s", "6")).then()
-      .statusCode(200)
+      .statusCode(Response.SC_OK)
+      .contentType("application/json")
       .body(empty());
 
     // recipient = 16 doesn't exist
     get(String.format("/transaction/recipient/%s", "16")).then()
-      .statusCode(400)
+      .statusCode(Response.SC_BAD_REQUEST)
       .body(empty());
 
     // 6. Check account creation resource works
