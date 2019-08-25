@@ -1,11 +1,14 @@
 package com.bank.app;
 
+import com.bank.pojo.ErrorResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.javalin.Javalin;
 import io.javalin.core.JavalinConfig;
+import io.javalin.http.BadRequestResponse;
 import io.javalin.plugin.json.JavalinJackson;
+import org.eclipse.jetty.server.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,7 +46,11 @@ public class JavalinApplication {
       application = Javalin.create(config).start(appPort)
         .get("/account/:accountId", appCtx.getAccountResource()::getAccount)
         .get("/transaction/:transactionId", appCtx.getTransactionResource()::getTransactionById)
-        .post("/transaction", appCtx.getTransactionResource()::createTransaction);
+        .post("/transaction", appCtx.getTransactionResource()::createTransaction)
+        .exception(BadRequestResponse.class, (e, context) -> {
+          context.status(Response.SC_BAD_REQUEST);
+          context.json(new ErrorResponse(e));
+        });
     }
     catch (SQLException ex) {
       LOGGER.error("Embedded database initialization failure", ex);
