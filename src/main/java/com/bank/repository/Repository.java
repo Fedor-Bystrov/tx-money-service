@@ -1,6 +1,6 @@
 package com.bank.repository;
 
-import com.bank.entity.Account;
+import com.bank.pojo.Account;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
