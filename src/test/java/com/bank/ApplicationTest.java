@@ -79,7 +79,26 @@ class ApplicationTest {
       assertEquals(account, accountResponse);
     });
 
-    // TODO check BadRequestResponse of id not string and id = 999
+    get(String.format("/account/%d", 999)).then()
+      .statusCode(Response.SC_BAD_REQUEST)
+      .contentType("application/json")
+      .body("error", equalTo("Invalid account id"));
+
+    // test request validation
+    get(String.format("/account/%s", "0")).then()
+      .statusCode(Response.SC_BAD_REQUEST)
+      .contentType("application/json")
+      .body("error", equalTo("Path parameter 'accountId' with value '0' invalid - Failed check"));
+
+    get(String.format("/account/%s", "-51")).then()
+      .statusCode(Response.SC_BAD_REQUEST)
+      .contentType("application/json")
+      .body("error", equalTo("Path parameter 'accountId' with value '-51' invalid - Failed check"));
+
+    get(String.format("/account/%s", "aa")).then()
+      .statusCode(Response.SC_BAD_REQUEST)
+      .contentType("application/json")
+      .body("error", equalTo("Path parameter 'accountId' with value 'aa' is not a valid Integer"));
 
     // 3. Check creation of transaction, check that balances change
   }
