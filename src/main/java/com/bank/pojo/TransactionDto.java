@@ -2,6 +2,7 @@ package com.bank.pojo;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 public class TransactionDto {
   private int transactionId;
@@ -36,6 +37,23 @@ public class TransactionDto {
 
   public int getRecipient() {
     return recipient;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    TransactionDto that = (TransactionDto) o;
+    return transactionId == that.transactionId &&
+      sender == that.sender &&
+      recipient == that.recipient &&
+      creationTime.equals(that.creationTime) &&
+      amount.equals(that.amount);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(transactionId, creationTime, amount, sender, recipient);
   }
 
   @Override
