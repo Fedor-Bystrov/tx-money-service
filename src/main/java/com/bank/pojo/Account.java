@@ -1,11 +1,15 @@
-package com.bank.entity;
+package com.bank.pojo;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Objects;
 
 public class Account {
   private final int accountId;
 
-  public Account(int accountId) {
+  @JsonCreator
+  public Account(@JsonProperty("accountId") int accountId) {
     this.accountId = accountId;
   }
 
