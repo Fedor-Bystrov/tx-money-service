@@ -21,6 +21,8 @@ VALUES (0), -- account(0) is admin account
        (5),
        (6);
 
+CREATE ALIAS get_account_balance FOR "com.bank.db.Functions.getAccountBalance";
+
 --
 -- Balances after initialization:
 ---------------------------------
