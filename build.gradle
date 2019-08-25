@@ -25,6 +25,7 @@ dependencies {
     compile group: 'com.h2database', name: 'h2', version: '1.4.197'
     compile "org.slf4j:slf4j-simple:1.7.26"
     compile "com.fasterxml.jackson.core:jackson-databind:2.10.0.pr1"
+    compile "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.9.8"
     compile 'io.javalin:javalin:3.4.1'
 }
 

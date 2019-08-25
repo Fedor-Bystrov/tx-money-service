@@ -1,7 +1,11 @@
 package com.bank.app;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.javalin.Javalin;
 import io.javalin.core.JavalinConfig;
+import io.javalin.plugin.json.JavalinJackson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,6 +34,11 @@ public class JavalinApplication {
 
       LOGGER.info("Initializing application context");
       final var appCtx = new ApplicationContext(connection);
+
+      // for java.time serialization
+      JavalinJackson.configure(new ObjectMapper()
+        .registerModule(new JavaTimeModule())
+        .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS));
 
       application = Javalin.create(config).start(appPort)
         .get("/account/:accountId", appCtx.getAccountResource()::getAccount)
