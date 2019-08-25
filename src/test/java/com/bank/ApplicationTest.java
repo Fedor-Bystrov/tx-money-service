@@ -89,7 +89,7 @@ class ApplicationTest {
       new TransactionDto(1,
         LocalDateTime.parse("2019-08-13T00:00:00"),
         new BigDecimal("2500000.00"),
-        1,
+        0,
         1),
       new TransactionDto(2,
         LocalDateTime.parse("2019-08-13T01:01:00"),
