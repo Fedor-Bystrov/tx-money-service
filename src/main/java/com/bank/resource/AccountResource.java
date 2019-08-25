@@ -14,8 +14,7 @@ public class AccountResource {
     this.accountService = accountService;
   }
 
-  public void getAccountList(Context context) {
-    LOGGER.info("Processing all accounts request");
-    context.json(accountService.getAccountList());
+  public void getAccount(Context context) {
+    // TODO
   }
 }
