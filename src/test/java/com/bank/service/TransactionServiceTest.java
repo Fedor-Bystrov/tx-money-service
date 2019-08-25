@@ -30,7 +30,7 @@ class TransactionServiceTest {
   void getTransactionByIdSuccess() throws SQLException {
     final var tx1 = new TransactionDto(1, LocalDateTime.now(),
       BigDecimal.TEN.setScale(2, RoundingMode.HALF_DOWN), 1, 2);
-    when(repository.findTransactionById(anyInt())).thenReturn(tx1);
+    when(repository.findTransactionById(tx1.getTransactionId())).thenReturn(tx1);
 
     final var transactionService = new TransactionService(repository);
     assertEquals(tx1, transactionService.getTransactionById(tx1.getTransactionId()));
