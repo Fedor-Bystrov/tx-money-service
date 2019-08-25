@@ -17,7 +17,7 @@ public class Repository {
   private static final String ALL_ACCOUNTS_QUERY = "SELECT account_id FROM accounts;";
   private static final String FIND_TX_BY_ID_QUERY = "SELECT " +
     "transaction_id, creation_time, amount, recipient, sender " +
-    "FROM transactions where id=%d;";
+    "FROM transactions where transaction_id=%d;";
 
   private final Connection connection;
 
