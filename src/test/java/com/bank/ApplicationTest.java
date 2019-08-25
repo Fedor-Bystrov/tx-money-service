@@ -1,7 +1,7 @@
 package com.bank;
 
 import com.bank.app.JavalinApplication;
-import com.bank.pojo.Account;
+import com.bank.pojo.AccountListDto;
 import io.restassured.RestAssured;
 import org.eclipse.jetty.server.Response;
 import org.junit.jupiter.api.AfterEach;
@@ -42,10 +42,10 @@ class ApplicationTest {
       .statusCode(Response.SC_OK)
       .contentType("application/json")
       .extract().body().jsonPath()
-      .getList("", Account.class);
+      .getList("", AccountListDto.class);
 
     assertEquals(6, accountList.size());
-    assertThat(accountList, containsInAnyOrder(IntStream.range(1, 7).mapToObj(Account::new).toArray()));
+    assertThat(accountList, containsInAnyOrder(IntStream.range(1, 7).mapToObj(AccountListDto::new).toArray()));
 
     // 2. Check that transaction were initialized
     INITIAL_TRANSACTIONS.forEach((transactionId, transactionData) ->

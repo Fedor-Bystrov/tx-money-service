@@ -1,6 +1,6 @@
 package com.bank.repository;
 
-import com.bank.pojo.Account;
+import com.bank.pojo.AccountListDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,15 +19,15 @@ public class Repository {
     this.connection = connection;
   }
 
-  public List<Account> selectAllAccounts() throws SQLException {
+  public List<AccountListDto> selectAllAccounts() throws SQLException {
     LOGGER.info("Selecting all accounts");
     try (final var statement = connection.createStatement();
          final var resultSet = statement.executeQuery(ALL_ACCOUNTS_QUERY)) {
 
       LOGGER.info("Extracting accounts");
-      final var accounts = new ArrayList<Account>();
+      final var accounts = new ArrayList<AccountListDto>();
       while (resultSet.next()) {
-        accounts.add(new Account(resultSet.getInt(1)));
+        accounts.add(new AccountListDto(resultSet.getInt(1)));
       }
 
       return accounts;

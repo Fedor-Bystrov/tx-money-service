@@ -1,6 +1,6 @@
 package com.bank.service;
 
-import com.bank.pojo.Account;
+import com.bank.pojo.AccountListDto;
 import com.bank.repository.Repository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +17,7 @@ public class AccountService {
     this.repository = repository;
   }
 
-  public List<Account> getAccountList() {
+  public List<AccountListDto> getAccountList() {
     try {
       LOGGER.info("Selecting all accounts from repository");
       return repository.selectAllAccounts();
