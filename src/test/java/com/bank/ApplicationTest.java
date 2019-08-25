@@ -2,7 +2,6 @@ package com.bank;
 
 import com.bank.app.JavalinApplication;
 import com.bank.pojo.AccountDto;
-import com.bank.pojo.AccountListDto;
 import com.bank.pojo.TransactionDto;
 import io.restassured.RestAssured;
 import org.eclipse.jetty.server.Response;
@@ -14,7 +13,6 @@ import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.IntStream;
 
 import static io.restassured.RestAssured.*;
 import static org.hamcrest.MatcherAssert.*;
@@ -41,17 +39,7 @@ class ApplicationTest {
 
   @Test
   void integrationTest() {
-    // 1. Check that accounts were initialized
-    final var accountList = get("/account/list").then()
-      .statusCode(Response.SC_OK)
-      .contentType("application/json")
-      .extract().body().jsonPath()
-      .getList("", AccountListDto.class);
-
-    assertEquals(6, accountList.size());
-    assertThat(accountList, containsInAnyOrder(IntStream.range(1, 7).mapToObj(AccountListDto::new).toArray()));
-
-    // 2. Check that transaction were initialized
+    // 1. Check that transaction were initialized
     INITIAL_TRANSACTIONS.forEach((transaction) -> {
         var txResponse = get(String.format("/transaction/%s", transaction.getTransactionId())).then()
           .statusCode(Response.SC_OK)
@@ -61,7 +49,9 @@ class ApplicationTest {
       }
     );
 
-    // 3. Check initial balances
+    // TODO check BadRequestResponse of id not string and id = 999
+
+    // 2. Check initial accounts
     INITIAL_ACCOUNTS.forEach((account) -> {
       var accountResponse = get(String.format("/account/%s", account.getAccountId())).then()
         .statusCode(Response.SC_OK)
@@ -70,54 +60,9 @@ class ApplicationTest {
       assertEquals(account, accountResponse);
     });
 
-    // 4. Check searching transactions by sender works
-    get(String.format("/transaction/sender/%s", "4")).then()
-      .statusCode(Response.SC_OK)
-      .contentType("application/json")
-      .body(
-        "transactionId", equalTo("5"),
-        "creationTime", equalTo("2019-08-13 04:04:00"),
-        "amount", equalTo("25000.25"),
-        "recipient", equalTo("5"),
-        "sender", equalTo("4")
-      );
+    // TODO check BadRequestResponse of id not string and id = 999
 
-    // zero transactions for sender = 6
-    get(String.format("/transaction/sender/%s", "6")).then()
-      .statusCode(Response.SC_OK)
-      .contentType("application/json")
-      .body(empty());
-
-    // sender = 16 doesn't exist
-    get(String.format("/transaction/sender/%s", "16")).then()
-      .statusCode(400)
-      .body(empty());
-
-    // 5. Check searching transactions by recipient works
-    get(String.format("/transaction/recipient/%s", "5")).then()
-      .statusCode(Response.SC_OK)
-      .contentType("application/json")
-      .body(
-        "transactionId", equalTo("5"),
-        "creationTime", equalTo("2019-08-13 04:04:00"),
-        "amount", equalTo("25000.25"),
-        "recipient", equalTo("5"),
-        "sender", equalTo("4")
-      );
-
-    // zero transactions for recipient = 6
-    get(String.format("/transaction/recipient/%s", "6")).then()
-      .statusCode(Response.SC_OK)
-      .contentType("application/json")
-      .body(empty());
-
-    // recipient = 16 doesn't exist
-    get(String.format("/transaction/recipient/%s", "16")).then()
-      .statusCode(Response.SC_BAD_REQUEST)
-      .body(empty());
-
-    // 6. Check account creation resource works
-    // 7. Check creation of transaction, check that balances change
+    // 3. Check creation of transaction, check that balances change
   }
 
   private static List<TransactionDto> getInitialTransactions() {
