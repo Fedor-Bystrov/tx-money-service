@@ -1,6 +1,7 @@
 package com.bank;
 
 import com.bank.app.JavalinApplication;
+import com.bank.pojo.AccountDto;
 import com.bank.pojo.AccountListDto;
 import com.bank.pojo.TransactionDto;
 import io.restassured.RestAssured;
@@ -13,7 +14,6 @@ import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.IntStream;
 
 import static io.restassured.RestAssured.*;
@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class ApplicationTest {
   private static final List<TransactionDto> INITIAL_TRANSACTIONS = getInitialTransactions();
-  private static final Map<String, String> INITIAL_ACCOUNTS = getInitialAccounts();
+  private static final List<AccountDto> INITIAL_ACCOUNTS = getInitialAccounts();
   private static final int TEST_APP_PORT = 3138;
 
   private JavalinApplication javalinApp;
@@ -53,7 +53,7 @@ class ApplicationTest {
 
     // 2. Check that transaction were initialized
     INITIAL_TRANSACTIONS.forEach((transaction) -> {
-        final var txResponse = get(String.format("/transaction/%s", transaction.getTransactionId())).then()
+        var txResponse = get(String.format("/transaction/%s", transaction.getTransactionId())).then()
           .statusCode(Response.SC_OK)
           .contentType("application/json")
           .extract().body().as(TransactionDto.class);
@@ -62,14 +62,13 @@ class ApplicationTest {
     );
 
     // 3. Check initial balances
-    INITIAL_ACCOUNTS.forEach((accountId, accountBalance) ->
-      get(String.format("/account/%s", accountId)).then()
+    INITIAL_ACCOUNTS.forEach((account) -> {
+      var accountResponse = get(String.format("/account/%s", account.getAccountId())).then()
         .statusCode(Response.SC_OK)
         .contentType("application/json")
-        .body(
-          "accountId", equalTo(accountBalance),
-          "balance", equalTo(accountBalance)
-        ));
+        .extract().body().as(AccountDto.class);
+      assertEquals(account, accountResponse);
+    });
 
     // 4. Check searching transactions by sender works
     get(String.format("/transaction/sender/%s", "4")).then()
@@ -151,14 +150,14 @@ class ApplicationTest {
     );
   }
 
-  private static Map<String, String> getInitialAccounts() {
-    return Map.of(
-      "1", "1000000.00",
-      "2", "500000.00",
-      "3", "500000.00",
-      "4", "474999.75",
-      "5", "25000.25",
-      "6", "0.00"
+  private static List<AccountDto> getInitialAccounts() {
+    return List.of(
+      new AccountDto(1, "1000000.00"),
+      new AccountDto(2, "500000.00"),
+      new AccountDto(3, "500000.00"),
+      new AccountDto(4, "474999.75"),
+      new AccountDto(5, "25000.25"),
+      new AccountDto(6, "0.00")
     );
   }
 }
