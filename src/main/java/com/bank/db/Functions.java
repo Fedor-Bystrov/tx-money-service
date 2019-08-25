@@ -6,9 +6,9 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 public class Functions {
-  private static final String SELECT_SENT_AMOUNT = "SELECT IFNULL(sum(amount), 0) " +
+  static final String SELECT_SENT_AMOUNT = "SELECT IFNULL(sum(amount), 0) " +
     "FROM transactions WHERE sender = %d";
-  private static final String SELECT_RECEIVED_AMOUNT = "SELECT IFNULL(sum(amount), 0) " +
+  static final String SELECT_RECEIVED_AMOUNT = "SELECT IFNULL(sum(amount), 0) " +
     "FROM transactions WHERE recipient = %d";
 
   /**
