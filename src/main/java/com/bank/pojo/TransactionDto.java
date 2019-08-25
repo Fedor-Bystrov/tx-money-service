@@ -3,14 +3,14 @@ package com.bank.pojo;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-public class Transaction {
+public class TransactionDto {
   private int transactionId;
   private LocalDateTime creationTime;
   private BigDecimal amount;
   private int sender;
   private int recipient;
 
-  public Transaction(int transactionId, LocalDateTime creationTime, BigDecimal amount, int sender, int recipient) {
+  public TransactionDto(int transactionId, LocalDateTime creationTime, BigDecimal amount, int sender, int recipient) {
     this.transactionId = transactionId;
     this.creationTime = creationTime;
     this.amount = amount;
@@ -40,7 +40,7 @@ public class Transaction {
 
   @Override
   public String toString() {
-    return "Transaction{" +
+    return "TransactionDto{" +
       "transactionId=" + transactionId +
       ", creationTime=" + creationTime +
       ", amount=" + amount +
