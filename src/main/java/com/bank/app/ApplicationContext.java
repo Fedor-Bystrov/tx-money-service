@@ -16,7 +16,7 @@ class ApplicationContext {
   private final AccountResource accountResource;
   private final TransactionResource transactionResource;
 
-  public ApplicationContext(Connection connection) {
+  ApplicationContext(Connection connection) {
     this.repository = new Repository(connection);
     this.accountService = new AccountService(repository);
     this.transactionService = new TransactionService(repository);
@@ -24,11 +24,11 @@ class ApplicationContext {
     this.transactionResource = new TransactionResource(transactionService);
   }
 
-  public AccountResource getAccountResource() {
+  AccountResource getAccountResource() {
     return accountResource;
   }
 
-  public TransactionResource getTransactionResource() {
+  TransactionResource getTransactionResource() {
     return transactionResource;
   }
 }
