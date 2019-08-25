@@ -45,7 +45,7 @@ public class Repository {
    *
    * @throws EntityNotFoundException if no transaction with specified id
    */
-  public TransactionDto findTransaction(int transactionId) throws SQLException {
+  public TransactionDto findTransactionById(int transactionId) throws SQLException {
     LOGGER.info("Looking for transaction with id = {}", transactionId);
     try (final var statement = connection.createStatement();
          final var resultSet = statement.executeQuery(String.format(FIND_TX_BY_ID_QUERY, transactionId))) {
