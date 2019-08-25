@@ -31,9 +31,12 @@ public class JavalinApplication {
 
       LOGGER.info("Initializing application context");
       ctx = new ApplicationContext(connection);
-
       application = Javalin.create(config).start(appPort)
-        .get("/account/list", ctx.getAccountResource()::getAccountList);
+        .get("/account/:accountId", c -> c.result(""))
+        .get("/transaction/:transactionId", c -> c.result(""))
+        .get("/transaction/sender/:sender", c -> c.result(""))
+        .get("/transaction/recipient/:recipient", c -> c.result(""))
+        .post("/transaction", c -> c.result(""));
     }
     catch (SQLException ex) {
       LOGGER.error("Embedded database initialization failure", ex);
