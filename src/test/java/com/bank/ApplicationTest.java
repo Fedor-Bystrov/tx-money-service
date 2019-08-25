@@ -2,13 +2,17 @@ package com.bank;
 
 import com.bank.app.JavalinApplication;
 import com.bank.pojo.AccountListDto;
+import com.bank.pojo.TransactionDto;
 import io.restassured.RestAssured;
 import org.eclipse.jetty.server.Response;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.IntStream;
 
@@ -18,7 +22,7 @@ import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ApplicationTest {
-  private static final Map<String, Map<String, String>> INITIAL_TRANSACTIONS = getInitialTransactions();
+  private static final List<TransactionDto> INITIAL_TRANSACTIONS = getInitialTransactions();
   private static final Map<String, String> INITIAL_ACCOUNTS = getInitialAccounts();
   private static final int TEST_APP_PORT = 3138;
 
@@ -48,17 +52,13 @@ class ApplicationTest {
     assertThat(accountList, containsInAnyOrder(IntStream.range(1, 7).mapToObj(AccountListDto::new).toArray()));
 
     // 2. Check that transaction were initialized
-    INITIAL_TRANSACTIONS.forEach((transactionId, transactionData) ->
-      get(String.format("/transaction/%s", transactionId)).then()
-        .statusCode(Response.SC_OK)
-        .contentType("application/json")
-        .body(
-          "transactionId", equalTo(transactionId),
-          "creationTime", equalTo(transactionData.get("creationTime")),
-          "amount", equalTo(transactionData.get("amount")),
-          "recipient", equalTo(transactionData.get("recipient")),
-          "sender", equalTo(transactionData.get("sender"))
-        )
+    INITIAL_TRANSACTIONS.forEach((transaction) -> {
+        final var txResponse = get(String.format("/transaction/%s", transaction.getTransactionId())).then()
+          .statusCode(Response.SC_OK)
+          .contentType("application/json")
+          .extract().body().as(TransactionDto.class);
+        assertEquals(transaction, txResponse);
+      }
     );
 
     // 3. Check initial balances
@@ -121,38 +121,34 @@ class ApplicationTest {
     // 7. Check creation of transaction, check that balances change
   }
 
-  private static Map<String, Map<String, String>> getInitialTransactions() {
-    return Map.of(
-      "1", Map.of(
-        "creationTime", "2019-08-13 00:00:00",
-        "amount", "2500000.00",
-        "recipient", "1",
-        "sender", "1"
-      ),
-      "2", Map.of(
-        "creationTime", "2019-08-13 01:01:00",
-        "amount", "500000.00",
-        "recipient", "2",
-        "sender", "1"
-      ),
-      "3", Map.of(
-        "creationTime", "2019-08-13 02:02:00",
-        "amount", "500000.00",
-        "recipient", "3",
-        "sender", "1"
-      ),
-      "4", Map.of(
-        "creationTime", "2019-08-13 03:03:00",
-        "amount", "500000.00",
-        "recipient", "4",
-        "sender", "1"
-      ),
-      "5", Map.of(
-        "creationTime", "2019-08-13 04:04:00",
-        "amount", "25000.25",
-        "recipient", "5",
-        "sender", "4"
-      ));
+  private static List<TransactionDto> getInitialTransactions() {
+    return List.of(
+      new TransactionDto(1,
+        LocalDateTime.parse("2019-08-13T00:00:00"),
+        new BigDecimal("2500000.00"),
+        1,
+        1),
+      new TransactionDto(2,
+        LocalDateTime.parse("2019-08-13T01:01:00"),
+        new BigDecimal("500000.00"),
+        1,
+        2),
+      new TransactionDto(3,
+        LocalDateTime.parse("2019-08-13T02:02:00"),
+        new BigDecimal("500000.00"),
+        1,
+        3),
+      new TransactionDto(4,
+        LocalDateTime.parse("2019-08-13T03:03:00"),
+        new BigDecimal("500000.00"),
+        1,
+        4),
+      new TransactionDto(5,
+        LocalDateTime.parse("2019-08-13T04:04:00"),
+        new BigDecimal("25000.25"),
+        4,
+        5)
+    );
   }
 
   private static Map<String, String> getInitialAccounts() {
