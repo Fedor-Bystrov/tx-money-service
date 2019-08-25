@@ -13,7 +13,7 @@ public class Repository {
   private static final Logger LOGGER = LoggerFactory.getLogger(Repository.class);
   private static final String FIND_TX_BY_ID_QUERY = "SELECT " +
     "transaction_id, creation_time, amount, recipient, sender " +
-    "FROM transactions where transaction_id=%d;";
+    "FROM transactions WHERE transaction_id=%d;";
 
   private final Connection connection;
 
