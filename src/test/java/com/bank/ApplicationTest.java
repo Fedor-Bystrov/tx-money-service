@@ -132,7 +132,16 @@ class ApplicationTest {
     assertEquals(createdTransaction, lastCreatedTransaction);
 
     // Check that account_3 and account_5 balances are updated
-    // TODO
+    get(String.format("/account/%d", newValidPostTransaction.getSender())).then()
+      .statusCode(Response.SC_BAD_REQUEST)
+      .contentType("application/json")
+      .body("accountId", equalTo(newValidPostTransaction.getSender()),
+        "balance", equalTo("479999.75"));
+    get(String.format("/account/%d", newValidPostTransaction.getRecipient())).then()
+      .statusCode(Response.SC_BAD_REQUEST)
+      .contentType("application/json")
+      .body("accountId", equalTo(newValidPostTransaction.getSender()),
+        "balance", equalTo("45000.50"));
 
   }
 
