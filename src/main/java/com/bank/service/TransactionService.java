@@ -42,6 +42,7 @@ public class TransactionService {
    * @return id of created transaction
    * @throws EntityNotFoundException if no sender with given id
    * @throws NotEnoughMoneyException if sender with given id does not have enough money
+   * @throws DatabaseException if database driver returned an exception
    */
   public int createTransaction(PostTransactionDto dto) {
     try {
@@ -54,7 +55,7 @@ public class TransactionService {
       return repository.createTransaction(dto);
     } catch (SQLException ex) {
       LOGGER.error("SQLException, cannot create transaction dto={}; Exception: ", dto, ex);
-      throw new DatabaseException();
+      throw new DatabaseException(ex);
     }
   }
 }
