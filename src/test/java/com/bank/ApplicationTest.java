@@ -2,6 +2,7 @@ package com.bank;
 
 import com.bank.app.JavalinApplication;
 import com.bank.pojo.AccountDto;
+import com.bank.pojo.PostTransactionDto;
 import com.bank.pojo.TransactionDto;
 import io.restassured.RestAssured;
 import org.eclipse.jetty.server.Response;
@@ -11,12 +12,14 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
 import static io.restassured.RestAssured.get;
+import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 class ApplicationTest {
   private static final List<TransactionDto> INITIAL_TRANSACTIONS = getInitialTransactions();
@@ -100,15 +103,37 @@ class ApplicationTest {
       .body("error", equalTo("Path parameter 'accountId' with value 'aa' is not a valid Integer"));
 
     // TODO Check creation of transaction, check that balances change
-    //   1. Create transaction 2000.25 from account 3 to account 5
-    //   2. Check transaction by ID
-    //   3. Check account 3 balance
-    //   4. Check account 5 balance
-    //   5. Send 1_000_000 from account 2, check bad request returned
-    //   6. Send 500 from account 999  to account 1 check bad request returned
-    //   7. Send 500 from account 999  to account 1 check bad request returned
-    //   8. Send 500 from account 1  to account 999 check bad request returned
-    //   8. Send 500 from account 998  to account 999 check bad request returned
+    //   - Send 1_000_000 from account 2, check bad request returned
+    //   - Send 500 from account 999  to account 1 check bad request returned
+    //   - Send 500 from account 1  to account 999 check bad request returned
+    //   - Send 500 from account 998  to account 999 check bad request returned
+
+    // 3. Create new transaction, send 2000.25 from account 3 to account 5
+    final var newValidPostTransaction = new PostTransactionDto("2000.25", 3, 5);
+    final var createdTransaction = given().body(newValidPostTransaction)
+      .when().post("/transaction")
+      .then()
+      .statusCode(Response.SC_CREATED)
+      .contentType("application/json")
+      .extract().body().as(TransactionDto.class);
+
+    assertEquals(INITIAL_TRANSACTIONS.size(), createdTransaction.getTransactionId());
+    assertNotNull(createdTransaction.getCreationTime());
+    assertTrue(createdTransaction.getCreationTime().isAfter(LocalDate.now().atStartOfDay()));
+    assertEquals(newValidPostTransaction.getAmount(), createdTransaction.getAmount());
+    assertEquals(newValidPostTransaction.getSender(), createdTransaction.getSender());
+    assertEquals(newValidPostTransaction.getRecipient(), createdTransaction.getRecipient());
+
+    // Test getting newly created transaction by id
+    final var lastCreatedTransaction = get(String.format("/transaction/%s", createdTransaction.getTransactionId())).then()
+      .statusCode(Response.SC_OK)
+      .contentType("application/json")
+      .extract().body().as(TransactionDto.class);
+    assertEquals(createdTransaction, lastCreatedTransaction);
+
+    // Check that account_3 and account_5 balances are updated
+    // TODO
+
   }
 
   private static List<TransactionDto> getInitialTransactions() {
