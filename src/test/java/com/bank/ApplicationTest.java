@@ -102,12 +102,6 @@ class ApplicationTest {
       .contentType("application/json")
       .body("error", equalTo("Path parameter 'accountId' with value 'aa' is not a valid Integer"));
 
-    // TODO Check creation of transaction, check that balances change
-    //   - Send 1_000_000 from account 2, check bad request returned
-    //   - Send 500 from account 999  to account 1 check bad request returned
-    //   - Send 500 from account 1  to account 999 check bad request returned
-    //   - Send 500 from account 998  to account 999 check bad request returned
-
     // 3. Create new transaction, send 2000.25 from account 3 to account 5
     final var newValidPostTransaction = new PostTransactionDto("2000.25", 3, 5);
     final var createdTransaction = given().body(newValidPostTransaction)
@@ -143,6 +137,34 @@ class ApplicationTest {
       .body("accountId", equalTo(newValidPostTransaction.getSender()),
         "balance", equalTo("45000.50"));
 
+    // Test request validation
+    given().body(new PostTransactionDto("1000000.25", 2, 1))
+      .when().post("/transaction")
+      .then()
+      .statusCode(Response.SC_BAD_REQUEST)
+      .contentType("application/json")
+      .body("error", equalTo("Not enough money"));
+
+    given().body(new PostTransactionDto("500", 999, 1))
+      .when().post("/transaction")
+      .then()
+      .statusCode(Response.SC_BAD_REQUEST)
+      .contentType("application/json")
+      .body("error", equalTo("Invalid sender id"));
+
+    given().body(new PostTransactionDto("500", 2, 999))
+      .when().post("/transaction")
+      .then()
+      .statusCode(Response.SC_BAD_REQUEST)
+      .contentType("application/json")
+      .body("error", equalTo("Invalid recipient id"));
+
+    given().body(new PostTransactionDto("500", 998, 999))
+      .when().post("/transaction")
+      .then()
+      .statusCode(Response.SC_BAD_REQUEST)
+      .contentType("application/json")
+      .body("error", equalTo("Invalid sender id"));
   }
 
   private static List<TransactionDto> getInitialTransactions() {
