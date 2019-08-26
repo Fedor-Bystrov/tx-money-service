@@ -103,39 +103,42 @@ class ApplicationTest {
       .body("error", equalTo("Path parameter 'accountId' with value 'aa' is not a valid Integer"));
 
     // 3. Create new transaction, send 2000.25 from account 3 to account 5
-    final var newValidPostTransaction = new PostTransactionDto("2000.25", 3, 5);
-    final var createdTransaction = given().body(newValidPostTransaction)
+    final var newValidPostTransaction = new PostTransactionDto("20000.25", 3, 5);
+    final int createdTransactionId = given().body(newValidPostTransaction)
       .when().post("/transaction")
       .then()
       .statusCode(Response.SC_CREATED)
       .contentType("application/json")
-      .extract().body().as(TransactionDto.class);
+      .extract().body().jsonPath().getInt("transactionId");
 
-    assertEquals(INITIAL_TRANSACTIONS.size(), createdTransaction.getTransactionId());
-    assertNotNull(createdTransaction.getCreationTime());
-    assertTrue(createdTransaction.getCreationTime().isAfter(LocalDate.now().atStartOfDay()));
-    assertEquals(newValidPostTransaction.getAmount(), createdTransaction.getAmount());
-    assertEquals(newValidPostTransaction.getSender(), createdTransaction.getSender());
-    assertEquals(newValidPostTransaction.getRecipient(), createdTransaction.getRecipient());
+    assertEquals(INITIAL_TRANSACTIONS.size() + 1, createdTransactionId);
 
     // Test getting newly created transaction by id
-    final var lastCreatedTransaction = get(String.format("/transaction/%s", createdTransaction.getTransactionId())).then()
+    final var lastCreatedTransaction = get(String.format("/transaction/%d", createdTransactionId)).then()
       .statusCode(Response.SC_OK)
       .contentType("application/json")
       .extract().body().as(TransactionDto.class);
-    assertEquals(createdTransaction, lastCreatedTransaction);
+
+    assertNotNull(lastCreatedTransaction.getCreationTime());
+    assertTrue(lastCreatedTransaction.getCreationTime().isAfter(LocalDate.now().atStartOfDay()));
+    assertEquals(newValidPostTransaction.getAmount(), lastCreatedTransaction.getAmount());
+    assertEquals(newValidPostTransaction.getSender(), lastCreatedTransaction.getSender());
+    assertEquals(newValidPostTransaction.getRecipient(), lastCreatedTransaction.getRecipient());
 
     // Check that account_3 and account_5 balances are updated
-    get(String.format("/account/%d", newValidPostTransaction.getSender())).then()
-      .statusCode(Response.SC_BAD_REQUEST)
+    final var sender = get(String.format("/account/%d", newValidPostTransaction.getSender())).then()
+      .statusCode(Response.SC_OK)
       .contentType("application/json")
-      .body("accountId", equalTo(newValidPostTransaction.getSender()),
-        "balance", equalTo("479999.75"));
-    get(String.format("/account/%d", newValidPostTransaction.getRecipient())).then()
-      .statusCode(Response.SC_BAD_REQUEST)
+      .extract().body().as(AccountDto.class);
+
+    assertEquals(new AccountDto(newValidPostTransaction.getSender(), "479999.75"), sender);
+
+    final var recipient = get(String.format("/account/%d", newValidPostTransaction.getRecipient())).then()
+      .statusCode(Response.SC_OK)
       .contentType("application/json")
-      .body("accountId", equalTo(newValidPostTransaction.getSender()),
-        "balance", equalTo("45000.50"));
+      .extract().body().as(AccountDto.class);
+
+    assertEquals(new AccountDto(newValidPostTransaction.getRecipient(), "45000.50"), recipient);
 
     // Test request validation
     given().body(new PostTransactionDto("1000000.25", 2, 1))
@@ -150,21 +153,21 @@ class ApplicationTest {
       .then()
       .statusCode(Response.SC_BAD_REQUEST)
       .contentType("application/json")
-      .body("error", equalTo("Invalid sender id"));
+      .body("error", equalTo("Request body as PostTransactionDto invalid - Failed check"));
 
     given().body(new PostTransactionDto("500", 2, 999))
       .when().post("/transaction")
       .then()
       .statusCode(Response.SC_BAD_REQUEST)
       .contentType("application/json")
-      .body("error", equalTo("Invalid recipient id"));
+      .body("error", equalTo("Request body as PostTransactionDto invalid - Failed check"));
 
     given().body(new PostTransactionDto("500", 998, 999))
       .when().post("/transaction")
       .then()
       .statusCode(Response.SC_BAD_REQUEST)
       .contentType("application/json")
-      .body("error", equalTo("Invalid sender id"));
+      .body("error", equalTo("Request body as PostTransactionDto invalid - Failed check"));
   }
 
   private static List<TransactionDto> getInitialTransactions() {

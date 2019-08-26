@@ -8,6 +8,7 @@ import com.bank.service.TransactionService;
 import io.javalin.http.BadRequestResponse;
 import io.javalin.http.Context;
 import io.javalin.http.InternalServerErrorResponse;
+import org.eclipse.jetty.server.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,6 +48,7 @@ public class TransactionResource {
 
     try {
       context.json(Map.of("transactionId", transactionService.createTransaction(postTransactionDto)));
+      context.status(Response.SC_CREATED);
     } catch (EntityNotFoundException ex) {
       LOGGER.warn("Entity not found exception for {}", postTransactionDto, ex);
       throw new BadRequestResponse("Invalid sender id");
