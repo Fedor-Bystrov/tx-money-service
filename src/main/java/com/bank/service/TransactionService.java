@@ -1,6 +1,9 @@
 package com.bank.service;
 
+import com.bank.exception.DatabaseException;
 import com.bank.exception.EntityNotFoundException;
+import com.bank.exception.NotEnoughMoneyException;
+import com.bank.pojo.PostTransactionDto;
 import com.bank.pojo.TransactionDto;
 import com.bank.repository.Repository;
 import io.javalin.http.BadRequestResponse;
@@ -29,6 +32,29 @@ public class TransactionService {
       LOGGER.error("SQLException, cannot fetch transaction by id: transactionId={}; Exception: ",
         transactionId, ex);
       throw new InternalServerErrorResponse();
+    }
+  }
+
+  /**
+   * Method for transaction creation, checks that sender has enough money.
+   *
+   * @param dto new transaction data
+   * @return id of created transaction
+   * @throws EntityNotFoundException if no sender with given id
+   * @throws NotEnoughMoneyException if sender with given id does not have enough money
+   */
+  public int createTransaction(PostTransactionDto dto) {
+    try {
+      // check that sender has enough money
+      final var senderAccount = repository.findAccountById(dto.getSender());
+      if (senderAccount.getBalance() == null || senderAccount.getBalance().compareTo(dto.getAmount()) < 0) {
+        throw new NotEnoughMoneyException();
+      }
+
+      return repository.createTransaction(dto);
+    } catch (SQLException ex) {
+      LOGGER.error("SQLException, cannot create transaction dto={}; Exception: ", dto, ex);
+      throw new DatabaseException();
     }
   }
 }
