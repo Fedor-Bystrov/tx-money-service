@@ -10,16 +10,13 @@ import java.sql.Connection;
 
 class ApplicationContext {
 
-  private final Repository repository;
-  private final AccountService accountService;
-  private final TransactionService transactionService;
   private final AccountResource accountResource;
   private final TransactionResource transactionResource;
 
   ApplicationContext(Connection connection) {
-    this.repository = new Repository(connection);
-    this.accountService = new AccountService(repository);
-    this.transactionService = new TransactionService(repository);
+    final var repository = new Repository(connection);
+    final var accountService = new AccountService(repository);
+    final var transactionService = new TransactionService(repository);
     this.accountResource = new AccountResource(accountService);
     this.transactionResource = new TransactionResource(transactionService);
   }
