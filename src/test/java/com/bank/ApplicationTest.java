@@ -99,8 +99,16 @@ class ApplicationTest {
       .contentType("application/json")
       .body("error", equalTo("Path parameter 'accountId' with value 'aa' is not a valid Integer"));
 
-    // 3. Check creation of transaction, check that balances change
-    // TODO
+    // TODO Check creation of transaction, check that balances change
+    //   1. Create transaction 2000.25 from account 3 to account 5
+    //   2. Check transaction by ID
+    //   3. Check account 3 balance
+    //   4. Check account 5 balance
+    //   5. Send 1_000_000 from account 2, check bad request returned
+    //   6. Send 500 from account 999  to account 1 check bad request returned
+    //   7. Send 500 from account 999  to account 1 check bad request returned
+    //   8. Send 500 from account 1  to account 999 check bad request returned
+    //   8. Send 500 from account 998  to account 999 check bad request returned
   }
 
   private static List<TransactionDto> getInitialTransactions() {
