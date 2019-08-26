@@ -7,8 +7,6 @@ import com.bank.pojo.AccountDto;
 import com.bank.pojo.PostTransactionDto;
 import com.bank.pojo.TransactionDto;
 import com.bank.repository.Repository;
-import io.javalin.http.BadRequestResponse;
-import io.javalin.http.InternalServerErrorResponse;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;

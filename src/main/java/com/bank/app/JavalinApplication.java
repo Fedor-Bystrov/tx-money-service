@@ -51,8 +51,7 @@ public class JavalinApplication {
           context.status(Response.SC_BAD_REQUEST);
           context.json(new ErrorResponse(e));
         });
-    }
-    catch (SQLException ex) {
+    } catch (SQLException ex) {
       LOGGER.error("Embedded database initialization failure", ex);
       throw new RuntimeException("Application initialization failure");
     }

@@ -38,6 +38,5 @@ public class AccountResource {
       LOGGER.error("Database exception during getAccount query", ex);
       throw new InternalServerErrorResponse();
     }
-
   }
 }

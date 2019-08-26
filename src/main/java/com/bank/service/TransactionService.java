@@ -20,7 +20,6 @@ public class TransactionService {
     this.repository = repository;
   }
 
-
   /**
    * Method for selecting transaction details given transactionId
    *
