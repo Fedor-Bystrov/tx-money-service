@@ -12,7 +12,7 @@ public class Functions {
     "FROM transactions WHERE recipient = %d";
 
   /**
-   * H2 analogous of stored procedure.
+   * H2 analogous of stored procedure. {@see initdb.sql}
    * Returns balance of account given accountId
    */
   public static BigDecimal getAccountBalance(Connection connection, int accountId) throws SQLException {
