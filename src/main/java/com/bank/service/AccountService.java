@@ -1,10 +1,9 @@
 package com.bank.service;
 
+import com.bank.exception.DatabaseException;
 import com.bank.exception.EntityNotFoundException;
 import com.bank.pojo.AccountDto;
 import com.bank.repository.Repository;
-import io.javalin.http.BadRequestResponse;
-import io.javalin.http.InternalServerErrorResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,16 +18,21 @@ public class AccountService {
     this.repository = repository;
   }
 
+  /**
+   * Method for selecting account information given accountId
+   *
+   * @param accountId id of account
+   * @return AccountDto with accountId and balance
+   * @throws EntityNotFoundException if no account with specified id
+   * @throws DatabaseException       if database driver returned an exception
+   */
   public AccountDto getAccountById(int accountId) {
     try {
       return repository.findAccountById(accountId);
-    } catch (EntityNotFoundException ex) {
-      LOGGER.info("No account with given id; accountId={}", accountId);
-      throw new BadRequestResponse("Invalid account id");
     } catch (SQLException ex) {
       LOGGER.error("SQLException, cannot fetch account by id: accountId={}; Exception: ",
         accountId, ex);
-      throw new InternalServerErrorResponse();
+      throw new DatabaseException(ex);
     }
   }
 }
