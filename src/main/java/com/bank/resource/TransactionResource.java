@@ -32,8 +32,19 @@ public class TransactionResource {
    * @param context javalin request context
    */
   public void getTransactionById(Context context) {
-    int transactionId = context.pathParam("transactionId", Integer.class).check(id -> id > 0).get();
-    context.json(transactionService.getTransactionById(transactionId));
+    int transactionId = context.pathParam("transactionId", Integer.class)
+      .check(id -> id > 0)
+      .get();
+
+    try {
+      context.json(transactionService.getTransactionById(transactionId));
+    } catch (EntityNotFoundException ex) {
+      LOGGER.info("No transaction with given id; transactionId={}", transactionId);
+      throw new BadRequestResponse("Invalid transaction id");
+    } catch (DatabaseException ex) {
+      LOGGER.error("Database exception during transaction creation", ex);
+      throw new InternalServerErrorResponse();
+    }
   }
 
   public void createTransaction(Context context) {

@@ -1,5 +1,6 @@
 package com.bank.service;
 
+import com.bank.exception.DatabaseException;
 import com.bank.exception.EntityNotFoundException;
 import com.bank.exception.NotEnoughMoneyException;
 import com.bank.pojo.AccountDto;
@@ -44,16 +45,15 @@ class TransactionServiceTest {
   void getTransactionByIdNoTransactionWithGivenId() throws SQLException {
     when(repository.findTransactionById(anyInt())).thenThrow(EntityNotFoundException.class);
     final var transactionService = new TransactionService(repository);
-    final var badRequestResponse = assertThrows(BadRequestResponse.class,
+    final var badRequestResponse = assertThrows(EntityNotFoundException.class,
       () -> transactionService.getTransactionById(1));
-    assertEquals("Invalid transaction id", badRequestResponse.getMessage());
   }
 
   @Test
   void getTransactionByIdSQLException() throws SQLException {
     when(repository.findTransactionById(anyInt())).thenThrow(SQLException.class);
     final var transactionService = new TransactionService(repository);
-    assertThrows(InternalServerErrorResponse.class,
+    assertThrows(DatabaseException.class,
       () -> transactionService.getTransactionById(1));
   }
 
