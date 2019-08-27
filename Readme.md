@@ -1,8 +1,9 @@
 # tx-money-service 
 
 An RESTful API for money transfers between accounts. 
-Provides 6 preinitialized accounts, 5 example money transactions 
-and an interface to fetch account balance, transaction details and create new transactions.
+Provides 6 accounts, 5 example money transactions 
+and an interface to fetch account balance, transaction details and create new transactions 
+(sending money between those six accounts).
 
 An executable jar with project can be downloaded from [link](https://github.com/Fedor-Bystrov/tx-money-service/raw/master/jars/tx-money-service-0.1.0.jar).
 
@@ -78,6 +79,30 @@ In the project root directory run:
 4. [Creating new transaction](#creating-new-transaction)
 
 ### Introduction
+
+Application comes with six accounts:
+
+| accountId | balance (coins) |
+|-----------|---------|
+|1|1_000_000.00|
+|2|500_000.00|
+|3|500_000.00|
+|4|474_999.75|
+|5|25_000.25|
+|6|0.00|
+
+and five example transactions:
+
+| transactionId | creation_time | amount | recipient | sender|
+|---------------|---------------|--------|-----------|-------|
+|1|2019-08-13 00:00|2500000.00|1|0|
+|2|2019-08-13 01:01|500000.00|2|1|
+|3|2019-08-13 02:02|500000.00|3|1|
+|4|2019-08-13 03:03|500000.00|4|1|
+|5|2019-08-13 04:04|25000.25|5|4|
+
+The API allows you to create new transactions thereby sending money between those six accounts.
+
 ### Getting account balance
 ### Getting transaction details
 ### Creating new transaction
