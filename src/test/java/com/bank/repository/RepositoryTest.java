@@ -120,6 +120,6 @@ class RepositoryTest {
 
     final var exception = assertThrows(SQLException.class, () -> new Repository(connection).
       createTransaction(new PostTransactionDto("5000", 1, 2)));
-    assertEquals("Cannot retreive id of created transaction", exception.getMessage());
+    assertEquals("Cannot retrieve id of created transaction", exception.getMessage());
   }
 }
