@@ -104,5 +104,16 @@ and five example transactions:
 The API allows you to create new transactions thereby _**sending money between those six accounts**_.
 
 ### Getting account balance
+
+`curl -X GET http://localhost:3137/account/{accountId}`
+
+For example, `curl -X GET http://localhost:3137/account/1` will return
+```json
+{
+  "accountId": 1,
+  "balance": 1000000.00
+}
+```
+
 ### Getting transaction details
 ### Creating new transaction
