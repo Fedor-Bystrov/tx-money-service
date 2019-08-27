@@ -101,6 +101,10 @@ and five example transactions:
 |4|2019-08-13 03:03|500000.00|4|1|
 |5|2019-08-13 04:04|25000.25|5|4|
 
+where: 
+- `sender` -  accountId that sends money
+- `recipient` - accountId that receives money
+
 The API allows you to create new transactions thereby _**sending money between those six accounts**_.
 
 ### Getting account balance
@@ -116,4 +120,21 @@ For example, `curl -X GET http://localhost:3137/account/1` will return
 ```
 
 ### Getting transaction details
+
+`curl -X GET http://localhost:3137/transaction/{transactionId}`
+
+For example, `curl -X GET http://localhost:3137/transaction/1 ` will return
+```json
+{
+  "transactionId": 1,
+  "creationTime": "2019-08-13T00:00:00",
+  "amount": 2500000.00,
+  "sender": 0,
+  "recipient": 1
+}
+```
+where: 
+- `sender` -  accountId that sends money
+- `recipient` - accountId that receives money
+
 ### Creating new transaction
