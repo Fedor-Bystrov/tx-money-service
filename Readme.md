@@ -138,3 +138,53 @@ where:
 - `recipient` - accountId that receives money
 
 ### Creating new transaction
+
+`curl -d '{ "amount":{amount}, "recipient":{accountId}, "sender":{accountId} }' -H "Content-Type: application/json" -X POST http://localhost:3137/transaction`
+
+returns
+```json
+{
+  "transactionId": "{id of created transaction}"
+}
+```
+
+For example: 
+`curl -d '{"amount":2000, "recipient":6, "sender":5}' -H "Content-Type: application/json" -X POST http://localhost:3137/transaction`
+will return 
+```json
+{
+  "transactionId": 6
+}
+```
+
+Then, we can check that transaction is created:
+
+`http://localhost:3137/transaction/6`
+```json
+{
+  "transactionId": 6,
+  "creationTime": "2019-08-27T00:00:00",
+  "amount": 2000,
+  "sender": 5,
+  "recipient": 6
+}
+```
+
+
+and sender and recipient balances are updated:
+
+`curl -X GET http://localhost:3137/account/5` - sender
+```json
+{
+  "accountId": 5,
+  "balance": 23000.25
+}
+```
+
+`curl -X GET http://localhost:3137/account/6` - recipient
+```json
+{
+  "accountId": 6,
+  "balance": 2000.00
+}
+```
