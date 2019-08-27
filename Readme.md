@@ -101,7 +101,7 @@ and five example transactions:
 |4|2019-08-13 03:03|500000.00|4|1|
 |5|2019-08-13 04:04|25000.25|5|4|
 
-The API allows you to create new transactions thereby sending money between those six accounts.
+The API allows you to create new transactions thereby _**sending money between those six accounts**_.
 
 ### Getting account balance
 ### Getting transaction details
