@@ -87,7 +87,7 @@ public class Repository {
         return generatedKeys.getInt(1);
       } else {
         LOGGER.error("New transaction creation error, cannot return id of created transaction");
-        throw new SQLException("Cannot retreive id of created transaction");
+        throw new SQLException("Cannot retrieve id of created transaction");
       }
     }
   }

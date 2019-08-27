@@ -47,6 +47,14 @@ public class TransactionResource {
     }
   }
 
+  /**
+   * Resource method for transaction creation.
+   *
+   * Validates that request body contains PostTransactionDto, checks
+   * that amount > 0 and sender and recipient are valid.
+   *
+   * @param context javalin request context
+   */
   public void createTransaction(Context context) {
     // validate request body
     final var postTransactionDto = context.bodyValidator(PostTransactionDto.class)
