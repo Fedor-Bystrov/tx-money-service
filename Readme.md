@@ -160,7 +160,7 @@ will return
 
 Then, we can check that transaction is created:
 
-    http://localhost:3137/transaction/6
+    curl -X GET http://localhost:3137/transaction/6
 ```json
 {
   "transactionId": 6,
