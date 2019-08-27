@@ -35,7 +35,7 @@ class AccountServiceTest {
   void getAccountByIdNoAccountWithGivenId() throws SQLException {
     when(repository.findAccountById(anyInt())).thenThrow(EntityNotFoundException.class);
     final var accountService = new AccountService(repository);
-    final var badRequestResponse = assertThrows(EntityNotFoundException.class,
+    assertThrows(EntityNotFoundException.class,
       () -> accountService.getAccountById(1));
   }
 

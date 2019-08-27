@@ -43,7 +43,7 @@ class TransactionServiceTest {
   void getTransactionByIdNoTransactionWithGivenId() throws SQLException {
     when(repository.findTransactionById(anyInt())).thenThrow(EntityNotFoundException.class);
     final var transactionService = new TransactionService(repository);
-    final var badRequestResponse = assertThrows(EntityNotFoundException.class,
+    assertThrows(EntityNotFoundException.class,
       () -> transactionService.getTransactionById(1));
   }
 
