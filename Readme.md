@@ -109,7 +109,7 @@ The API allows you to create new transactions thereby _**sending money between t
 
 ### Getting account balance
 
-`curl -X GET http://localhost:3137/account/{accountId}`
+    curl -X GET http://localhost:3137/account/{accountId}
 
 For example, `curl -X GET http://localhost:3137/account/1` will return
 ```json
@@ -121,7 +121,7 @@ For example, `curl -X GET http://localhost:3137/account/1` will return
 
 ### Getting transaction details
 
-`curl -X GET http://localhost:3137/transaction/{transactionId}`
+    curl -X GET http://localhost:3137/transaction/{transactionId}
 
 For example, `curl -X GET http://localhost:3137/transaction/1 ` will return
 ```json
@@ -139,7 +139,7 @@ where:
 
 ### Creating new transaction
 
-`curl -d '{ "amount":{amount}, "recipient":{accountId}, "sender":{accountId} }' -H "Content-Type: application/json" -X POST http://localhost:3137/transaction`
+    curl -d '{ "amount":{amount}, "recipient":{accountId}, "sender":{accountId} }' -H "Content-Type: application/json" -X POST http://localhost:3137/transaction
 
 returns
 ```json
@@ -149,7 +149,8 @@ returns
 ```
 
 For example: 
-`curl -d '{"amount":2000, "recipient":6, "sender":5}' -H "Content-Type: application/json" -X POST http://localhost:3137/transaction`
+
+    curl -d '{"amount":2000, "recipient":6, "sender":5}' -H "Content-Type: application/json" -X POST http://localhost:3137/transaction
 will return 
 ```json
 {
@@ -159,7 +160,7 @@ will return
 
 Then, we can check that transaction is created:
 
-`http://localhost:3137/transaction/6`
+    http://localhost:3137/transaction/6
 ```json
 {
   "transactionId": 6,
