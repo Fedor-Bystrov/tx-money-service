@@ -73,9 +73,9 @@ In the project root directory run:
 ## API Overview
 
 1. [Introduction](#Introduction)
-2. [Getting account balance](#Getting account balance)
-3. [Getting transaction details](#Getting transaction details)
-4. [Creating new transaction](#Creating new transaction)
+2. [Getting account balance](#getting-account-balance)
+3. [Getting transaction details](#getting-transaction-details)
+4. [Creating new transaction](#creating-new-transaction)
 
 ### Introduction
 ### Getting account balance
