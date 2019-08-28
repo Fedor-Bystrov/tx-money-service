@@ -17,7 +17,7 @@ An executable jar with project can be downloaded from [link](https://github.com/
 
 Executing `java -jar tx-money-service-0.1.0.jar` will start application on `http://localhost:3137`
 
-Jar file with application located in `./jars`
+Jar file with application is located in `./jars`
 
 ### Build and run from sources
 
@@ -78,9 +78,9 @@ In the project root directory run:
 ## API Overview
 
 1. [Introduction](#Introduction)
-2. [Getting account balance](#getting-account-balance)
-3. [Getting transaction details](#getting-transaction-details)
-4. [Creating new transaction](#creating-new-transaction)
+2. [Get account balance](#get-account-balance)
+3. [Get transaction details](#get-transaction-details)
+4. [Create new transaction](#create-new-transaction)
 
 ### Introduction
 
@@ -111,7 +111,7 @@ where:
 
 The API allows you to create new transactions thereby _**sending money between those six accounts**_.
 
-### Getting account balance
+### Get account balance
 
     curl -X GET http://localhost:3137/account/{accountId}
 
@@ -123,7 +123,7 @@ For example, `curl -X GET http://localhost:3137/account/1` will return
 }
 ```
 
-### Getting transaction details
+### Get transaction details
 
     curl -X GET http://localhost:3137/transaction/{transactionId}
 
@@ -141,7 +141,7 @@ where:
 - `sender` -  accountId that sends money
 - `recipient` - accountId that receives money
 
-### Creating new transaction
+### Create new transaction
 
     curl -d '{ "amount":{amount}, "recipient":{accountId}, "sender":{accountId} }' -H "Content-Type: application/json" -X POST http://localhost:3137/transaction
 
