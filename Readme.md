@@ -9,6 +9,10 @@ An executable jar with project can be downloaded from [link](https://github.com/
 
 ## Getting Started
 
+### Prerequisites
+
+`Java 11`
+
 ### Run prebuild jar file
 
 Executing `java -jar tx-money-service-0.1.0.jar` will start application on `http://localhost:3137`
