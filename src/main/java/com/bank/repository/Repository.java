@@ -23,6 +23,10 @@ public class Repository {
   static final String INSERT_TX_QUERY =
     "INSERT INTO transactions (amount, recipient, sender) VALUES (?, ?, ?);";
 
+  /**
+   * H2 database connection is thread safe
+   * http://www.h2database.com/javadoc/org/h2/jdbc/JdbcConnection.html
+   */
   private final Connection connection;
 
   public Repository(Connection connection) {
